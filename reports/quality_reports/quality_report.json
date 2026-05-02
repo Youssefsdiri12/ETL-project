@@ -1,0 +1,24 @@
+{
+  "generated_at": "2026-05-02T23:17:49.112390Z",
+  "input_path": "data\\raw\\pharmacie_raw.csv",
+  "outputs": {
+    "clean_csv": "C:\\Users\\MSI\\Desktop\\UTL-main\\data\\processed\\customers_clean.csv",
+    "dedup_csv": "C:\\Users\\MSI\\Desktop\\UTL-main\\data\\processed\\customers_deduped.csv"
+  },
+  "cleaning": {
+    "rows_before": 405,
+    "exact_duplicates_removed": 0,
+    "invalid_emails": 25,
+    "invalid_dates": 405,
+    "negative_amount_count": 0,
+    "rows_after": 380
+  },
+  "deduplication": {
+    "ml_duplicates_found": 0,
+    "dropped_indices": []
+  },
+  "anomaly": {
+    "anomalies_found": 38
+  },
+  "final_rows": 380
+}

@@ -34,14 +34,14 @@ env/
 .DS_Store
 
 # Data
-data/raw/
-data/processed/
+# data/raw/
+# data/processed/
 
 # Models
-data/models/
+# data/models/
 
 # Reports
-reports/
+# reports/
 
 # Logs
 *.log

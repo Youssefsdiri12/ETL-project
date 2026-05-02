@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-05-03T00:05:27.742508",
+  "input_path": "data\\raw\\customers_raw.csv",
+  "data": {
+    "total_rows": 7,
+    "total_columns": 8
+  },
+  "etl_classique": {
+    "duration": 0.016376018524169922,
+    "rows_processed": 7,
+    "rows_final": 5,
+    "duplicates_found": 2,
+    "anomalies_found": 0
+  },
+  "etl_ai": {
+    "duration": 0.053276777267456055,
+    "rows_processed": 7,
+    "rows_final": 7,
+    "duplicates_found": 0,
+    "anomalies_found": 2
+  },
+  "comparison": {
+    "time_difference": 0.03690075874328613,
+    "time_difference_percentage": 225.33412922575198,
+    "duplicates_difference": -2,
+    "anomalies_difference": 2
+  },
+  "verdict": {
+    "overall_winner": "⚡ ETL CLASSIQUE",
+    "reasons": [
+      "⚡ ETL Classique: Plus rapide de 225.3%",
+      "🤖 ETL IA: Détecte 2 anomalies supplémentaires"
+    ]
+  },
+  "conclusion": "L'approche traditionnelle est plus rapide mais moins intelligente."
+}
