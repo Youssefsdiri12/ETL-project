@@ -36,8 +36,7 @@ def load_etl_modules():
 train_main, pipeline_main, profiling_main, benchmark_main = load_etl_modules()
 
 # ── Titre ─────────────────────────────────────────────────────────────────────
-st.markdown("# 🧹 SmartETL — Pipeline ETL + Machine Learning")
-st.markdown("*Automatiser le nettoyage et la déduplication de données avec l'IA*")
+st.markdown("# 🧹 Smart ETL")
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
