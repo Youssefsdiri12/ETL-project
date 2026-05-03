@@ -422,12 +422,25 @@ elif page == "🗄️ SQL Server":
     else:
         if st.button("🚀 Charger les données dans SQL Server", use_container_width=True):
             with st.spinner("⏳ Chargement en cours…"):
-                try:
-                    from src.load_to_db import main as load_db_main
-                    load_db_main()
-                    st.success("✅ Données chargées dans SQL Server !")
-                except Exception as e:
-                    st.error(f"❌ Erreur : {e}")
+                import io
+                import contextlib
+                log_stream = io.StringIO()
+                with contextlib.redirect_stdout(log_stream):
+                    try:
+                        from src.load_to_db import main as load_db_main
+                        load_db_main()
+                        success = True
+                    except Exception as e:
+                        success = False
+                        error_msg = str(e)
+                
+                with st.expander("📝 Voir les logs SQL Server", expanded=True):
+                    st.code(log_stream.getvalue(), language="text")
+                
+                if success:
+                    st.success("✅ Script SQL terminé (voir logs pour le détail)")
+                else:
+                    st.error(f"❌ Erreur critique : {error_msg}")
 
         st.markdown("---")
         st.markdown("### 📋 Requêtes SQL utiles")

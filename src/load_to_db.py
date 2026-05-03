@@ -20,13 +20,13 @@ def create_database():
         conn_str = f'Driver={DRIVER};Server={SERVER};Database=master;Trusted_Connection=yes;'
         conn = pyodbc.connect(conn_str)
         cursor = conn.cursor()
+        conn.autocommit = True
 
         # Vérifier l'existence de la base de données
         cursor.execute(f"SELECT name FROM sys.databases WHERE name = '{DATABASE}'")
         if not cursor.fetchone():
             print(f"📁 Création de la base de données: {DATABASE}...")
             cursor.execute(f"CREATE DATABASE {DATABASE}")
-            conn.commit()
             print(f"✅ Base de données créée: {DATABASE}")
         else:
             print(f"✅ La base de données existe déjà: {DATABASE}")
@@ -38,79 +38,47 @@ def create_database():
         return False
 
 
-def create_tables(conn):
-    """Création des tables"""
-    cursor = conn.cursor()
-
-    # Table des données nettoyées
-    create_clean_table = f"""
-    IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = '{TABLE_CLEAN}')
-    CREATE TABLE {TABLE_CLEAN} (
-        customer_id INT,
-        name NVARCHAR(255),
-        email NVARCHAR(255),
-        phone NVARCHAR(20),
-        city NVARCHAR(100),
-        country NVARCHAR(100),
-        signup_date DATE,
-        amount DECIMAL(10, 2)
-    )
-    """
-
-    # Table des données dédupliquées avec anomalies
-    create_dedup_table = f"""
-    IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = '{TABLE_DEDUP}')
-    CREATE TABLE {TABLE_DEDUP} (
-        customer_id INT,
-        name NVARCHAR(255),
-        email NVARCHAR(255),
-        phone NVARCHAR(20),
-        city NVARCHAR(100),
-        country NVARCHAR(100),
-        signup_date DATE,
-        amount DECIMAL(10, 2),
-        is_anomaly INT,
-        anomaly_score FLOAT
-    )
-    """
-
-    try:
-        cursor.execute(create_clean_table)
-        print(f"✅ Table créée: {TABLE_CLEAN}")
-
-        cursor.execute(create_dedup_table)
-        print(f"✅ Table créée: {TABLE_DEDUP}")
-
-        conn.commit()
-        return True
-    except Exception as e:
-        print(f"❌ Erreur lors de la création des tables: {e}")
-        return False
-
-
 def load_data_to_db(csv_path, table_name):
-    """Chargement des données CSV dans la base de données"""
+    """Chargement des données CSV dans la base de données de manière dynamique"""
     try:
-        # Lecture des données
-        df = pd.read_csv(csv_path)
+        # Lecture des données avec auto-détection du séparateur
+        df = pd.read_csv(csv_path, sep=None, engine='python')
 
         # Connexion à SQL Server
         conn_str = f'Driver={DRIVER};Server={SERVER};Database={DATABASE};Trusted_Connection=yes;'
         conn = pyodbc.connect(conn_str)
         cursor = conn.cursor()
 
-        # Vider la table (optionnel)
-        cursor.execute(f"TRUNCATE TABLE {table_name}")
+        # 1. Supprimer la table si elle existe pour recréer le bon schéma dynamique
+        cursor.execute(f"IF EXISTS (SELECT * FROM sys.tables WHERE name = '{table_name}') DROP TABLE {table_name}")
 
-        # Insérer les données
+        # 2. Générer le schéma dynamiquement
+        columns_sql = []
+        for col, dtype in df.dtypes.items():
+            if pd.api.types.is_integer_dtype(dtype):
+                sql_type = 'INT'
+            elif pd.api.types.is_float_dtype(dtype):
+                sql_type = 'FLOAT'
+            elif pd.api.types.is_bool_dtype(dtype):
+                sql_type = 'BIT'
+            else:
+                sql_type = 'NVARCHAR(MAX)'
+            columns_sql.append(f'[{col}] {sql_type}')
+        
+        schema = ',\n        '.join(columns_sql)
+        create_query = f"CREATE TABLE {table_name} (\n        {schema}\n    )"
+        cursor.execute(create_query)
+        print(f"✅ Table dynamique recréée: {table_name}")
+
+        # 3. Insérer les données
         for index, row in df.iterrows():
             # Remplacer NaN par None
             values = [None if pd.isna(val) else val for val in row]
 
             # Requête INSERT
             placeholders = ','.join(['?' for _ in values])
-            columns = ','.join(df.columns)
-            query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+            cols = ','.join([f'[{c}]' for c in df.columns])
+            query = f"INSERT INTO {table_name} ({cols}) VALUES ({placeholders})"
 
             cursor.execute(query, values)
 
@@ -138,8 +106,13 @@ def verify_data():
         cursor.execute(f"SELECT COUNT(*) FROM {TABLE_DEDUP}")
         dedup_count = cursor.fetchone()[0]
 
-        cursor.execute(f"SELECT COUNT(*) FROM {TABLE_DEDUP} WHERE is_anomaly = 1")
-        anomaly_count = cursor.fetchone()[0]
+        # Check if is_anomaly exists in DEDUP table
+        cursor.execute(f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{TABLE_DEDUP}' AND COLUMN_NAME = 'is_anomaly'")
+        if cursor.fetchone():
+            cursor.execute(f"SELECT COUNT(*) FROM {TABLE_DEDUP} WHERE is_anomaly = 1")
+            anomaly_count = cursor.fetchone()[0]
+        else:
+            anomaly_count = "N/A"
 
         conn.close()
 
@@ -164,46 +137,27 @@ def main():
     print("="*50)
 
     # Etape 1: Création DB
-    print("\n[1/5] Création de la base de données...")
+    print("\n[1/4] Création de la base de données...")
     if not create_database():
         print("❌ Échec de la création de la base de données")
         return
 
-    # Etape 2: Connexion SQL Server
-    print("\n[2/5] Connexion à SQL Server...")
-    try:
-        conn_str = f'Driver={DRIVER};Server={SERVER};Database={DATABASE};Trusted_Connection=yes;'
-        conn = pyodbc.connect(conn_str)
-        print(f"✅ Connecté à {SERVER}\\{DATABASE}")
-    except Exception as e:
-        print(f"❌ Échec de la connexion: {e}")
-        return
-
-    # Etape 3: Création des tables
-    print("\n[3/5] Création des tables...")
-    if not create_tables(conn):
-        print("❌ Échec de la création des tables")
-        conn.close()
-        return
-
-    conn.close()
-
-    # Etape 4: Chargement données nettoyées
-    print("\n[4/5] Chargement des données nettoyées...")
+    # Etape 2: Chargement données nettoyées
+    print("\n[2/4] Chargement des données nettoyées...")
     if CLEAN_OUTPUT.exists():
         load_data_to_db(CLEAN_OUTPUT, TABLE_CLEAN)
     else:
         print(f"⚠️ Fichier introuvable: {CLEAN_OUTPUT}")
 
-    # Etape 5: Chargement données finales
-    print("\n[5/5] Chargement des données finales...")
+    # Etape 3: Chargement données finales
+    print("\n[3/4] Chargement des données finales...")
     if DEDUP_OUTPUT.exists():
         load_data_to_db(DEDUP_OUTPUT, TABLE_DEDUP)
     else:
         print(f"⚠️ Fichier introuvable: {DEDUP_OUTPUT}")
 
-    # Verification
-    print("\n[Vérification] Vérification des données...")
+    # Etape 4: Verification
+    print("\n[4/4] Vérification des données...")
     verify_data()
 
     print("\n✅ Toutes les données ont été sauvegardées dans SQL Server avec succès !\n")
