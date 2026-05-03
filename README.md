@@ -340,9 +340,9 @@ Ce projet est sous licence **MIT**. Voir le fichier `LICENSE` pour les détails.
 
 ## 👨‍💻 Auteur
 
-**Ghassen Gmati**  
+**Youssef Sdiri**
 📧 Email: ghassen.gmati@example.com  
-🔗 GitHub: [@GhassenGmatii](https://github.com/GhassenGmatii)  
+🔗 GitHub: [@Youssefsdiri12](https://github.com/Youssefsdiri12)  
 🐙 Repository: [SmartETL](https://github.com/Youssefsdiri12/ETL-project)
 
 ---

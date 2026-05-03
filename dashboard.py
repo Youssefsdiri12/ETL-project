@@ -455,4 +455,4 @@ elif page == "🗄️ SQL Server":
 
 # ── Footer ────────────────────────────────────────────────────────────────────
 st.markdown("---")
-st.markdown("🧹 **SmartETL** — Pipeline ETL + Machine Learning &nbsp;|&nbsp; Made with ❤️ by GhassenGmatii")
+st.markdown("Made with ❤️ by Youssef Sdiri")
