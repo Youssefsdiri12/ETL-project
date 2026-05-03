@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 
 # Configuration Streamlit
 st.set_page_config(
-    page_title="UTL - ETL & AI Dashboard",
+    page_title="SmartETL - ETL & AI Dashboard",
     page_icon="🧹",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -36,7 +36,7 @@ def load_etl_modules():
 train_main, pipeline_main, profiling_main, benchmark_main = load_etl_modules()
 
 # ── Titre ─────────────────────────────────────────────────────────────────────
-st.markdown("# 🧹 UTL — Pipeline ETL + Machine Learning")
+st.markdown("# 🧹 SmartETL — Pipeline ETL + Machine Learning")
 st.markdown("*Automatiser le nettoyage et la déduplication de données avec l'IA*")
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
@@ -358,7 +358,7 @@ elif page == "🗄️ SQL Server":
     **Configuration requise :**
     - SQL Server Express installé localement
     - Serveur : `localhost\\SQLEXPRESS`
-    - Base de données : `UTL_DB` *(créée automatiquement)*
+    - Base de données : `SmartETL_DB` *(créée automatiquement)*
     """)
 
     col_status1, col_status2 = st.columns(2)
@@ -391,4 +391,4 @@ elif page == "🗄️ SQL Server":
 
 # ── Footer ────────────────────────────────────────────────────────────────────
 st.markdown("---")
-st.markdown("🧹 **UTL** — Pipeline ETL + Machine Learning &nbsp;|&nbsp; Made with ❤️ by GhassenGmatii")
+st.markdown("🧹 **SmartETL** — Pipeline ETL + Machine Learning &nbsp;|&nbsp; Made with ❤️ by GhassenGmatii")

@@ -1,4 +1,4 @@
-# ⚡ Quick Start Guide - UTL
+# ⚡ Quick Start Guide - SmartETL
 
 ## 🚀 Démarrage rapide en 5 minutes
 
@@ -6,8 +6,8 @@
 
 ```bash
 # Clone le projet
-git clone https://github.com/GhassenGmatii/UTL.git
-cd UTL
+git clone https://github.com/Youssefsdiri12/ETL-project.git
+cd ETL-project
 
 # Crée l'environnement virtuel
 python -m venv venv
@@ -120,8 +120,8 @@ streamlit run dashboard.py
 
 Consultez:
 - 📖 [README.md](README.md) - Documentation complète
-- 🐛 [GitHub Issues](https://github.com/GhassenGmatii/UTL/issues)
-- 💬 [Discussions](https://github.com/GhassenGmatii/UTL/discussions)
+- 🐛 [GitHub Issues](https://github.com/Youssefsdiri12/ETL-project/issues)
+- 💬 [Discussions](https://github.com/Youssefsdiri12/ETL-project/discussions)
 
 ---
 

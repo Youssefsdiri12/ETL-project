@@ -1,24 +1,35 @@
 {
-  "generated_at": "2026-05-02T23:17:49.112390Z",
-  "input_path": "data\\raw\\pharmacie_raw.csv",
+  "generated_at": "2026-05-03T01:29:16.937699Z",
+  "input_path": "data\\raw\\marketing_campaign.csv",
   "outputs": {
     "clean_csv": "C:\\Users\\MSI\\Desktop\\UTL-main\\data\\processed\\customers_clean.csv",
     "dedup_csv": "C:\\Users\\MSI\\Desktop\\UTL-main\\data\\processed\\customers_deduped.csv"
   },
   "cleaning": {
-    "rows_before": 405,
+    "rows_before": 2240,
     "exact_duplicates_removed": 0,
-    "invalid_emails": 25,
-    "invalid_dates": 405,
-    "negative_amount_count": 0,
-    "rows_after": 380
+    "invalid_emails": 0,
+    "invalid_dates": 0,
+    "rows_after": 2240
   },
   "deduplication": {
-    "ml_duplicates_found": 0,
-    "dropped_indices": []
+    "ml_duplicates_found": 11,
+    "dropped_indices": [
+      421,
+      486,
+      363,
+      463,
+      179,
+      83,
+      408,
+      281,
+      282,
+      443,
+      383
+    ]
   },
   "anomaly": {
-    "anomalies_found": 38
+    "anomalies_found": 0
   },
-  "final_rows": 380
+  "final_rows": 2229
 }

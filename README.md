@@ -152,7 +152,7 @@ Un système **ETL (Extract, Transform, Load) entièrement automatisé et intelli
 ## 📁 Structure du projet
 
 ```
-UTL/
+SmartETL/
 ├── README.md                          # Documentation principale
 ├── pharmacie_raw.csv                  # Dataset brut (1000+ patients)
 ├── data/
@@ -184,8 +184,8 @@ UTL/
 
 ### **1. Installation des dépendances**
 ```bash
-git clone https://github.com/GhassenGmatii/UTL.git
-cd UTL
+git clone https://github.com/Youssefsdiri12/ETL-project.git
+cd ETL-project
 pip install -r requirements.txt
 ```
 
@@ -343,15 +343,15 @@ Ce projet est sous licence **MIT**. Voir le fichier `LICENSE` pour les détails.
 **Ghassen Gmati**  
 📧 Email: ghassen.gmati@example.com  
 🔗 GitHub: [@GhassenGmatii](https://github.com/GhassenGmatii)  
-🐙 Repository: [UTL](https://github.com/GhassenGmatii/UTL)
+🐙 Repository: [SmartETL](https://github.com/Youssefsdiri12/ETL-project)
 
 ---
 
 ## 📞 Support & Contact
 
 Pour toute question ou support:
-- 📧 Ouvrir une [Issue](https://github.com/GhassenGmatii/UTL/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/GhassenGmatii/UTL/discussions)
+- 📧 Ouvrir une [Issue](https://github.com/Youssefsdiri12/ETL-project/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/Youssefsdiri12/ETL-project/discussions)
 - 📞 Contact direct via email
 
 ---

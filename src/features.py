@@ -1,38 +1,62 @@
 import pandas as pd
+import numpy as np
 from rapidfuzz import fuzz
 
-def compute_name_similarity(name1, name2):
-    if pd.isna(name1) or pd.isna(name2):
+def compute_similarity(val1, val2, is_text=True):
+    if pd.isna(val1) or pd.isna(val2):
         return 0.0
-    return fuzz.token_set_ratio(str(name1), str(name2)) / 100.0
-
-def compute_email_similarity(email1, email2):
-    if pd.isna(email1) or pd.isna(email2):
-        return 0.0
-    return fuzz.ratio(str(email1), str(email2)) / 100.0
-
-def compute_phone_similarity(phone1, phone2):
-    if pd.isna(phone1) or pd.isna(phone2):
-        return 0.0
-    return fuzz.ratio(str(phone1), str(phone2)) / 100.0
+    
+    if is_text:
+        return fuzz.token_set_ratio(str(val1), str(val2)) / 100.0
+    else:
+        # Numérique : similarité basée sur la différence relative
+        try:
+            v1, v2 = float(val1), float(val2)
+            if v1 == 0 and v2 == 0: return 1.0
+            diff = abs(v1 - v2) / max(abs(v1), abs(v2))
+            return max(0.0, 1.0 - diff)
+        except:
+            return 0.0
 
 def create_pair_features(df):
     pairs = []
-    for i in range(len(df)):
-        for j in range(i + 1, len(df)):
-            row_i = df.iloc[i]
-            row_j = df.iloc[j]
-            name_sim = compute_name_similarity(row_i["name"], row_j["name"])
-            email_sim = compute_email_similarity(row_i["email"], row_j["email"])
-            phone_sim = compute_phone_similarity(row_i["phone"], row_j["phone"])
+    text_cols = df.select_dtypes(include=['object']).columns.tolist()
+    num_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+    
+    # Limiter aux 500 premières lignes pour éviter un temps de calcul infini sur les gros datasets
+    df_sample = df.head(500)
+    
+    for i in range(len(df_sample)):
+        row_i = df_sample.iloc[i]
+        for j in range(i + 1, len(df_sample)):
+            row_j = df_sample.iloc[j]
+            
+            # Similarité textuelle globale
+            text_sims = [compute_similarity(row_i[c], row_j[c], is_text=True) for c in text_cols]
+            avg_text_sim = sum(text_sims) / len(text_sims) if text_sims else 0.0
+            
+            # Similarité numérique globale
+            num_sims = [compute_similarity(row_i[c], row_j[c], is_text=False) for c in num_cols]
+            avg_num_sim = sum(num_sims) / len(num_sims) if num_sims else 0.0
+            
+            # Si pas de colonnes de l'un ou l'autre type, on moyenne ce qu'on a
+            if not text_cols and not num_cols:
+                avg_sim = 0.0
+            elif not text_cols:
+                avg_sim = avg_num_sim
+            elif not num_cols:
+                avg_sim = avg_text_sim
+            else:
+                avg_sim = (avg_text_sim + avg_num_sim) / 2.0
+            
             pairs.append({
                 "idx_i": i,
                 "idx_j": j,
-                "name_sim": name_sim,
-                "email_sim": email_sim,
-                "phone_sim": phone_sim,
-                "avg_sim": (name_sim + email_sim + phone_sim) / 3.0,
+                "text_sim": avg_text_sim,
+                "num_sim": avg_num_sim,
+                "avg_sim": avg_sim,
             })
+            
     return pd.DataFrame(pairs) if pairs else pd.DataFrame()
 
 def extract_features(df):

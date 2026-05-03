@@ -329,7 +329,7 @@ def generate_html_report(report):
             </section>
             
             <footer>
-                <p>Rapport généré par <strong>UTL - Benchmark</strong></p>
+                <p>Rapport généré par <strong>SmartETL - Benchmark</strong></p>
                 <p>🔄 Pipeline ETL + Machine Learning</p>
             </footer>
         </div>

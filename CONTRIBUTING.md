@@ -1,18 +1,18 @@
-# 🤝 Contribution au projet UTL
+# 🤝 Contribution au projet SmartETL
 
-Merci de votre intérêt pour contribuer au projet UTL!
+Merci de votre intérêt pour contribuer au projet SmartETL!
 
 ## 📋 Guide de contribution
 
 ### 1. Fork le repository
 ```bash
-fork GhassenGmatii/UTL
+fork Youssefsdiri12/ETL-project
 ```
 
 ### 2. Clone votre fork
 ```bash
-git clone https://github.com/YOUR_USERNAME/UTL.git
-cd UTL
+git clone https://github.com/YOUR_USERNAME/ETL-project.git
+cd ETL-project
 ```
 
 ### 3. Créez une branche

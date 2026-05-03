@@ -5,7 +5,7 @@ from .config import CLEAN_OUTPUT, DEDUP_OUTPUT
 
 # إعدادات SQL Server
 SERVER = r'localhost\SQLEXPRESS'
-DATABASE = 'UTL_DB'
+DATABASE = 'SmartETL_DB'
 DRIVER = 'ODBC Driver 17 for SQL Server'
 
 # جداول SQL
