@@ -73,7 +73,7 @@ if page == "📤 Traitement":
             input_path.write_bytes(uploaded_file.getbuffer())
             st.success(f"✅ Fichier chargé : **{uploaded_file.name}**")
 
-            df = pd.read_csv(input_path)
+            df = pd.read_csv(input_path, sep=None, engine='python')
             st.markdown("### 📋 Aperçu des données brutes")
             st.dataframe(df.head(10), use_container_width=True)
             st.markdown(f"**Dimensions :** {df.shape[0]} lignes × {df.shape[1]} colonnes")
@@ -85,7 +85,7 @@ if page == "📤 Traitement":
                 selected = st.selectbox("…ou utiliser un fichier existant :", existing)
                 if selected:
                     input_path = selected
-                    df = pd.read_csv(input_path)
+                    df = pd.read_csv(input_path, sep=None, engine='python')
                     st.markdown("### 📋 Aperçu des données")
                     st.dataframe(df.head(10), use_container_width=True)
                     st.markdown(f"**Dimensions :** {df.shape[0]} lignes × {df.shape[1]} colonnes")
