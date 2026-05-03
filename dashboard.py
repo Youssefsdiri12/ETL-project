@@ -100,23 +100,51 @@ if page == "📤 Traitement":
             # Bouton 1 : Entraîner les modèles
             if st.button("🚀 1. Entraîner les modèles IA", use_container_width=True):
                 with st.spinner("⏳ Entraînement en cours…"):
-                    try:
-                        train_main(str(input_path))
+                    import io
+                    import contextlib
+                    log_stream = io.StringIO()
+                    with contextlib.redirect_stdout(log_stream):
+                        try:
+                            train_main(str(input_path))
+                            success = True
+                        except Exception as e:
+                            success = False
+                            error_msg = str(e)
+                    
+                    with st.expander("📝 Voir les logs d'entraînement", expanded=True):
+                        st.code(log_stream.getvalue(), language="text")
+                        
+                    if success:
                         st.success("✅ Modèles entraînés et sauvegardés !")
-                    except Exception as e:
-                        st.error(f"❌ Erreur : {e}")
+                    else:
+                        st.error(f"❌ Erreur : {error_msg}")
 
             st.markdown("---")
 
             # Bouton 2 : Lancer le pipeline
             if st.button("🔧 2. Lancer le pipeline ETL", use_container_width=True):
                 with st.spinner("⏳ Pipeline en cours…"):
-                    try:
-                        pipeline_main(str(input_path))
+                    import io
+                    import contextlib
+                    log_stream = io.StringIO()
+                    with contextlib.redirect_stdout(log_stream):
+                        try:
+                            print("🔄 Entraînement automatique des modèles pour ce dataset...")
+                            train_main(str(input_path))
+                            print("🚀 Lancement du pipeline ETL...")
+                            pipeline_main(str(input_path))
+                            success = True
+                        except Exception as e:
+                            success = False
+                            error_msg = str(e)
+                    
+                    with st.expander("📝 Voir les logs du pipeline", expanded=True):
+                        st.code(log_stream.getvalue(), language="text")
+                        
+                    if success:
                         st.success("✅ Pipeline ETL terminé !")
-                        st.rerun()
-                    except Exception as e:
-                        st.error(f"❌ Erreur : {e}")
+                    else:
+                        st.error(f"❌ Erreur : {error_msg}")
 
     # ── Résultats ─────────────────────────────────────────────────────────────
     if DEDUP_CSV.exists():
