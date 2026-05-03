@@ -194,12 +194,24 @@ elif page == "📊 Data Profiling":
 
         if st.button("🔍 Lancer l'analyse Profiling", use_container_width=True):
             with st.spinner("⏳ Profiling en cours…"):
-                try:
-                    profiling_main(str(input_file))
+                import io
+                import contextlib
+                log_stream = io.StringIO()
+                with contextlib.redirect_stdout(log_stream):
+                    try:
+                        profiling_main(str(input_file))
+                        success = True
+                    except Exception as e:
+                        success = False
+                        error_msg = str(e)
+                
+                with st.expander("📝 Voir les logs du Profiling", expanded=True):
+                    st.code(log_stream.getvalue(), language="text")
+                
+                if success:
                     st.success("✅ Profiling terminé !")
-                    st.rerun()
-                except Exception as e:
-                    st.error(f"❌ Erreur profiling : {e}")
+                else:
+                    st.error(f"❌ Erreur profiling : {error_msg}")
 
         # Afficher le rapport si disponible
         if PROFILING_JSON.exists():
@@ -299,14 +311,26 @@ elif page == "🔄 Benchmark":
     else:
         input_file = st.selectbox("Choisir un fichier CSV :", raw_files)
 
-        if st.button("⚡ Lancer le Benchmark", use_container_width=True):
+        if st.button("⚡ Lancer le Benchmark complet", use_container_width=True):
             with st.spinner("⏳ Benchmark en cours…"):
-                try:
-                    benchmark_main(str(input_file))
+                import io
+                import contextlib
+                log_stream = io.StringIO()
+                with contextlib.redirect_stdout(log_stream):
+                    try:
+                        benchmark_main(str(input_file))
+                        success = True
+                    except Exception as e:
+                        success = False
+                        error_msg = str(e)
+                        
+                with st.expander("📝 Voir les logs du Benchmark", expanded=True):
+                    st.code(log_stream.getvalue(), language="text")
+                
+                if success:
                     st.success("✅ Benchmark terminé !")
-                    st.rerun()
-                except Exception as e:
-                    st.error(f"❌ Erreur benchmark : {e}")
+                else:
+                    st.error(f"❌ Erreur benchmark : {error_msg}")
 
         if BENCHMARK_JSON.exists():
             with open(BENCHMARK_JSON, encoding="utf-8") as f:
